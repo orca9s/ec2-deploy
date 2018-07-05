@@ -37,5 +37,4 @@ echo $RUNSERVER_CMD
 # 서버 접속 후, 프로젝트의 'app'폴더까지 이동한 후 runserver명령어를 실행
 ${CMD_CONNECT} "cd ${SERVER_DIR}/app && ${RUNSERVER_CMD}"
 echo "End"
-
 echo "Deploy complete"
