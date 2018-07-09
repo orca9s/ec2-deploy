@@ -11,12 +11,17 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 ROOT_DIR = os.path.dirname(BASE_DIR)
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
+SECRET_DIR = os.path.join(ROOT_DIR, '.secrets/base.json')
 
+with open(SECRET_DIR, 'rt') as f:
+	secrets = json.loads(f.read())
 
 # STATICFILES
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
@@ -24,16 +29,7 @@ STATICFILES_DIRS = [
     STATIC_DIR,
 ]
 
-
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'u5b4%)*_$nihopfr)*+wbvum4dksin85d-8!vr%kgclfpc$hkb'
-
-# SECURITY WARNING: don't run with debug turned on in production!
+SECRET_KEY = secrets['SECRET_KEY']
 
 AUTH_USER_MODEL = 'members.USer'
 
