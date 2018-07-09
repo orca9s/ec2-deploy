@@ -4,8 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "*"
 uwsgi = "*"
+pillow = "*"
+django = "*"
 
 [dev-packages]
 

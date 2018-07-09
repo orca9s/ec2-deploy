@@ -2,12 +2,12 @@ FROM            ec2-deploy:base
 
 ENV         PROJECT_DIR     /srv/project
 
-# Nginx
-RUN     apt -y install nginx
+# Nginx, Supervisor install
+RUN     apt -y install nginx supervisor
 
 # Copy project files
-COPY            .   /srv/project
-WORKDIR         /srv/project
+COPY            .   ${PROJECT_DIR}
+WORKDIR         ${PROJECT_DIR}
 
 # virtualenv files
 RUN         export VENV_PATH=$(pipenv --venv); echo $venv_PATH;
@@ -15,7 +15,7 @@ RUN         export VENV_PATH=$(pipenv --venv); echo $venv_PATH;
 # Nginx config
 
             #nginx.conf(Nginx자체 설정파일)을 덮어씌우기
-RUN         cp -f   ${PROJCET_DIR}/.config/nginx.conf \
+RUN         cp -f   ${PROJECT_DIR}/.config/nginx.conf \
                     /etc/nginx/nginx.conf && \
 
             # available에 nginx_app.conf파일 복사
@@ -28,6 +28,15 @@ RUN         cp -f   ${PROJCET_DIR}/.config/nginx.conf \
             # available에 있는 nginx_app.conf를 enabled로 링크
             ln -sf  /etc/nginx/sites-available/nginx_app.conf \
                     /etc/nginx/sites-enabled
+
+
+# Supervisor config
+RUN         cp -f   ${PROJECT_DIR}/.config/supervisor_app.conf \
+                    /etc/supervisor/conf.d/
+
+
+# Run supervisor
+CMD         supervisord -n
 
 
 #Run uWSGI (CMD)
