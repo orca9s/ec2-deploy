@@ -18,10 +18,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 ROOT_DIR = os.path.dirname(BASE_DIR)
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
-SECRET_DIR = os.path.join(ROOT_DIR, '.secrets/base.json')
+SECRET_DIR = os.path.join(ROOT_DIR, '.secrets')
 
-with open(SECRET_DIR, 'rt') as f:
-	secrets = json.loads(f.read())
+with open(os.path.join(SECRET_DIR, 'base.json'), 'rt') as f:
+    jsons = f.read()
+json_str = json.loads(jsons)
 
 # STATICFILES
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
@@ -29,7 +30,7 @@ STATICFILES_DIRS = [
     STATIC_DIR,
 ]
 
-SECRET_KEY = secrets['SECRET_KEY']
+SECRET_KEY = json_str['SECRET_KEY']
 
 AUTH_USER_MODEL = 'members.USer'
 

@@ -15,11 +15,11 @@ RUN         export VENV_PATH=$(pipenv --venv); echo $venv_PATH;
 # Nginx config
 
             #nginx.conf(Nginx자체 설정파일)을 덮어씌우기
-RUN         cp -f   ${PROJECT_DIR}/.config/nginx.conf \
+RUN         cp -f   ${PROJECT_DIR}/.config/local/nginx.conf \
                     /etc/nginx/nginx.conf && \
 
             # available에 nginx_app.conf파일 복사
-            cp -f   ${PROJECT_DIR}/.config/nginx_app.conf \
+            cp -f   ${PROJECT_DIR}/.config/local/nginx_app.conf \
                     /etc/nginx/sites-available/ && \
 
             # 이미 sites-enabled에 있던 모든 내용 삭제
@@ -31,7 +31,7 @@ RUN         cp -f   ${PROJECT_DIR}/.config/nginx.conf \
 
 
 # Supervisor config
-RUN         cp -f   ${PROJECT_DIR}/.config/supervisor_app.conf \
+RUN         cp -f   ${PROJECT_DIR}/.config/local/supervisor_app.conf \
                     /etc/supervisor/conf.d/
 
 
