@@ -1,0 +1,39 @@
+FROM        ec2-deploy:base
+
+ENV         PROJECT_DIR     /srv/project
+ENV         BUILD_MODE            production
+ENV         DJANGO_SETTINGS_MODULE  config.settings.production
+# supervisor를 포함한 nginx설치
+RUN         apt -y install nginx supervisor
+# Copy project files
+COPY        .   ${PROJECT_DIR}
+WORKDIR     ${PROJECT_DIR}
+
+# Virtualenv path
+            # available 에 nginx_app.conf파일 복사
+RUN         export VENV_PATH=$(pipenv --venv); echo $VENV_PATH;
+            # 처음으로 project에 들어 있는 nginx.conf 를 복사해서
+            # etc로 옮긴다.
+RUN         cp -f ${PROJECT_DIR}/.config/${BUILD_MODE}/nginx.conf \
+                    /etc/nginx/nginx.conf && \
+            # 그다음에는 project에 들어 있는 nginx_app.conf를
+            # sites-available로 옮긴다.
+            cp -f ${PROJECT_DIR}/.config/${BUILD_MODE}/nginx_app.conf \
+                    /etc/nginx/sites-available/ && \
+             # sites-enabled에 있을 수 있는 링크를 지운다.
+            rm -f /etc/nginx/sites-enabled/* && \
+
+            # sites-available로 링크를 걸어 준다.
+            ln -sf /etc/nginx/sites-available/nginx_app.conf \
+                   /etc/nginx/sites-enabled
+
+# Supervisor config
+# 프로젝트에 있는 supervisor_app.conf를
+# supervisor폴더 안의 conf.d에 넣어라
+# 이러면 실행된다.
+RUN         cp -f ${PROJECT_DIR}/.config/${BUILD_MODE}/supervisor_app.conf \
+                   /etc/supervisor/conf.d/
+
+# supervisor의 실행
+# supervisord -n를 사용하게되면 자동으로 uWSGI와 Nginx가 동시에 실행 된다.
+CMD         supervisord -n
